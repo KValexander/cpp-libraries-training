@@ -12,12 +12,17 @@ class Game {
 private:
 
 	RenderWindow* window; // окно
-	Event event; // событие
 	VideoMode video_mode; // размер окна
+	Event event; // событие
+	Mouse mouse;
+
+	// Игровые объекты
+	RectangleShape enemy;
 
 	// Инициализация переменных и окна
 	void init_variables();
 	void init_window();
+	void init_enemies();
 
 // Публичные методы
 public:

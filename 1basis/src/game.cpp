@@ -8,6 +8,8 @@ Game::Game() {
 	// Инициализация
 	this->init_variables();
 	this->init_window();
+	this->init_textures();
+	this->init_sprites();
 	this->init_enemies();
 
 }
@@ -26,6 +28,10 @@ void Game::init_variables() {
 	// Окно
 	this->window = nullptr;
 
+	// Позиция
+	this->x = 0;
+	this->y = 0;
+
 }
 
 // Инициализация окна
@@ -42,6 +48,23 @@ void Game::init_window() {
 
     // FPS
     this->window->setFramerateLimit(60);
+
+}
+
+// Инициализация текстур
+void Game::init_textures() {
+
+	// Загрузка изображения в текстуру
+	if(!this->texture.loadFromFile("assets/one.png"))
+		std::cout << "Error" << std::endl;
+
+}
+
+// Инициализация спрайтов
+void Game::init_sprites() {
+
+	// Загрузка текстуры в спрайт
+	this->sprite.setTexture(this->texture);
 
 }
 
@@ -66,8 +89,8 @@ void Game::init_enemies() {
 void Game::events() {
 
 	// Получение позиции мыши
-	Vector2i mxy = this->mouse.getPosition(*this->window);
-	std::cout << "Mouse pos: " << mxy.x << " " << mxy.y << std::endl;
+	// Vector2i mxy = this->mouse.getPosition(*this->window);
+	// std::cout << "Mouse pos: " << mxy.x << " " << mxy.y << std::endl;
 
     // Отслеживание событий
     while(this->window->pollEvent(this->event)) {
@@ -77,19 +100,32 @@ void Game::events() {
             this->window->close();
 
         // Обработка событий нажатия мыши
-        if(this->event.type == Event::MouseButtonPressed)
-        	// Нажатие на левую кнопку мыши
-        	if(this->event.mouseButton.button == Mouse::Left)
-        		// Изменение позиции противника
-				this->enemy.setPosition(mxy.x - 50, mxy.y - 50);
+    //     if(this->event.type == Event::MouseButtonPressed)
+    //     	// Нажатие на левую кнопку мыши
+    //     	if(this->event.mouseButton.button == Mouse::Left)
+    //     		// Изменение позиции противника
+				// this->enemy.setPosition(mxy.x - 50, mxy.y - 50);
 
     }
+
+    // Обработка нажатий на клавиши
+    if(Keyboard::isKeyPressed(Keyboard::Right)) // вправо
+    	this->x += 10;
+    else if(Keyboard::isKeyPressed(Keyboard::Left)) // влево
+    	this->x -= 10;
+
+    if(Keyboard::isKeyPressed(Keyboard::Up)) // вверх
+    	this->y -= 10;
+    else if(Keyboard::isKeyPressed(Keyboard::Down)) // вниз
+    	this->y += 10;
+
 
 }
 
 // Обновление данных
 void Game::update() {
-
+	
+	this->sprite.setPosition(Vector2f(this->x, this->y));
 
     // Обработка событий
     this->events();
@@ -103,6 +139,7 @@ void Game::render() {
 
 	// Отрисовка противника
 	this->window->draw(this->enemy);
+	this->window->draw(this->sprite);
 
 	this->window->display(); // отрисовка
 }

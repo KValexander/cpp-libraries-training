@@ -21,4 +21,5 @@ target_link_libraries(main
 	${SFML_LIBRARIES}
 )
 
+add_custom_target(link_assets ALL COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/assets ${CMAKE_BINARY_DIR}/assets)
 add_custom_target(link_bin ALL COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/../SFML/bin ${CMAKE_BINARY_DIR})

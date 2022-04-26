@@ -11,10 +11,20 @@ class Game {
 // Приватные методы
 private:
 
+	// Позиция игрока
+	float x, y;
+	float dx, dy;
+
 	RenderWindow* window; // окно
 	VideoMode video_mode; // размер окна
 	Event event; // событие
 	Mouse mouse;
+
+	// Текстуры
+	Texture texture;
+
+	// Спрайты
+	Sprite sprite;
 
 	// Игровые объекты
 	RectangleShape enemy;
@@ -22,6 +32,8 @@ private:
 	// Инициализация переменных и окна
 	void init_variables();
 	void init_window();
+	void init_textures();
+	void init_sprites();
 	void init_enemies();
 
 // Публичные методы

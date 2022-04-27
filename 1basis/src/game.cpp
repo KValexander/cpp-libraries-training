@@ -6,11 +6,11 @@
 Game::Game() {
 
 	// Инициализация
-	this->init_variables();
-	this->init_window();
-	this->init_textures();
-	this->init_sprites();
-	this->init_enemies();
+	this->init_variables(); // инициализиция переменных
+	this->init_window(); // инициализиция окна
+	this->init_textures(); // инициализиция текстур
+	this->init_sprites(); // инициализиция спрайтов
+	this->init_enemies(); // инициализиция противника
 
 }
 
@@ -108,24 +108,17 @@ void Game::events() {
 
     }
 
-    // Обработка нажатий на клавиши
-    if(Keyboard::isKeyPressed(Keyboard::Right)) // вправо
-    	this->x += 10;
-    else if(Keyboard::isKeyPressed(Keyboard::Left)) // влево
-    	this->x -= 10;
-
-    if(Keyboard::isKeyPressed(Keyboard::Up)) // вверх
-    	this->y -= 10;
-    else if(Keyboard::isKeyPressed(Keyboard::Down)) // вниз
-    	this->y += 10;
-
 
 }
 
 // Обновление данных
 void Game::update() {
 	
-	this->sprite.setPosition(Vector2f(this->x, this->y));
+	// Обновление данных игрока
+	this->player.update();
+
+	// Обновление позиции спрайта
+	this->sprite.setPosition(this->player.position);
 
     // Обработка событий
     this->events();

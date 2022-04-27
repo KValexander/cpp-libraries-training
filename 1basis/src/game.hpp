@@ -3,10 +3,13 @@
 // Подключение библиотеки SFMl
 #include <SFML/Graphics.hpp>
 
+// Подключение файлов
+#include "player.hpp"
+
 // Пространство имён sf
 using namespace sf;
 
-// Класс Game
+// Класс Игра
 class Game {
 // Приватные методы
 private:
@@ -25,6 +28,9 @@ private:
 
 	// Спрайты
 	Sprite sprite;
+
+	// Игрок
+	Player player;
 
 	// Игровые объекты
 	RectangleShape enemy;

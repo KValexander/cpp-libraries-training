@@ -22,6 +22,9 @@ private:
 	Event event; // событие
 	Mouse mouse;
 
+	// Область отрисовки
+	View view;
+
 	// Текстуры
 	Texture texture;
 
@@ -34,15 +37,13 @@ private:
 	// Игровые объекты
 	RectangleShape enemy;
 
-	// Линия
-	Vertex line[4][2];
-
 	// Поверхность
 	RectangleShape surface;
 
 	// Инициализация переменных и окна
 	void init_variables();
 	void init_window();
+	void init_view();
 	void init_textures();
 	void init_sprites();
 	void init_enemies();
@@ -57,7 +58,11 @@ public:
 	const bool running() const;
 
 	// Проверка пересечения прямоугольников
-	int collision_rectangle(float x1, float y1, float x2, float y2, float w1, float h1, float w2, float h2);
+	int collision_rectangle(float x1, float y1, float x2,
+		float y2, float w1, float h1, float w2, float h2);
+
+	// Обновление области отрисовки
+	void update_view(Vector2f position);
 
 	void events(); // Обработка событий
 	void collision(); // коллизии

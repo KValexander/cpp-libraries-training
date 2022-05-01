@@ -12,6 +12,7 @@ private:
 
 	Vector2f position; // позиция
 	float dx, dy; // скорость
+	bool is_jump; // состояние прыжка
 
 public:
 	
@@ -21,7 +22,9 @@ public:
 	Vector2f get_position(); // получить позицию
 	void increase_dy(float gravity); // прибавить скорость падения
 
-	void stop_falling(); // остановка падения
+	void jump(); // прыжок
+
+	void stop_falling(float y); // остановка падения
 	void update(); // обновление данных игрока
 
 };

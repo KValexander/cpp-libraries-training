@@ -8,6 +8,7 @@ Game::Game() {
 	// Инициализация
 	this->init_variables(); // инициализиция переменных
 	this->init_window(); // инициализиция окна
+	this->init_view(); // инициализиция области отрисовки
 	this->init_textures(); // инициализиция текстур
 	this->init_sprites(); // инициализиция спрайтов
 	this->init_enemies(); // инициализиция противника
@@ -29,19 +30,6 @@ void Game::init_variables() {
 	// Окно
 	this->window = nullptr;
 
-	// Точки линии
-	this->line[0][0] = Vertex(Vector2f(0.0f, 0.0f));
-	this->line[0][1] = Vertex(Vector2f(960 / 2 - 50, 540 / 2 - 50));
-
-	this->line[1][0] = Vertex(Vector2f(960, 0));
-	this->line[1][1] = Vertex(Vector2f(960 / 2 + 50, 540 / 2 - 50));
-
-	this->line[2][0] = Vertex(Vector2f(0, 540));
-	this->line[2][1] = Vertex(Vector2f(960 / 2 - 50, 540 / 2 + 50));
-
-	this->line[3][0] = Vertex(Vector2f(960, 540));
-	this->line[3][1] = Vertex(Vector2f(960 / 2 + 50, 540 / 2 + 50));
-
 }
 
 // Инициализация окна
@@ -58,6 +46,15 @@ void Game::init_window() {
 
     // FPS
     this->window->setFramerateLimit(60);
+
+}
+
+// Инициализация области отрисовки
+void Game::init_view() {
+
+	// Данные отрисовки
+	view.setCenter(Vector2f(this->video_mode.width / 2, this->video_mode.height / 2));
+	view.setSize(Vector2f(this->video_mode.width, this->video_mode.height));
 
 }
 
@@ -161,14 +158,27 @@ void Game::collision() {
 		player_size.y,
 		surface_size.x,
 		surface_size.y
-	)) this->player.stop_falling();
-
-	// player_pos.x > (surface_pos.x + surface_size.x)
-	// surface_pos.x > (player_pos.x + player_size.x)
-
-	// player_pos.y > (surface_pos.y + surface_size.y)
-	// surface_pos.y > (player_pos.y + player_size.y)
+	)) this->player.stop_falling(surface_pos.y);
 	
+}
+
+// Обновление камеры
+void Game::update_view(Vector2f position) {
+
+	// Корректирование позиции
+	position.x += 57 / 2;
+	position.y += 64 / 2;
+
+	// Проверка позиции области отрисовки
+	if(position.x < this->video_mode.width / 2)  position.x = this->video_mode.width / 2;
+	if(position.y > this->video_mode.height / 2)  position.y = this->video_mode.height / 2;
+
+	// Передвижение области отрисовки
+	this->view.setCenter(position);
+
+    // Обновление области отрисовки
+    this->window->setView(this->view);
+
 }
 
 // Обновление данных
@@ -176,9 +186,6 @@ void Game::update() {
 
     // Обработка событий
     this->events();
-
-    // Коллизии
-    this->collision();
 
 	// Обновление данных игрока
 	this->player.update();
@@ -188,16 +195,18 @@ void Game::update() {
 	
 	// Гравитация игрока
 	this->player.increase_dy(GRAVITY);
+
+	// Обновление области отрисовки
+	this->update_view(this->player.get_position());
+
+    // Коллизии
+    this->collision();
 }
 
 // Отрисовка данных
 void Game::render() {
 	// Очистка заднего фона
 	this->window->clear(Color(128, 128, 128, 255));
-
-	// Отрисовка линии
-	for(int i = 0; i < 4; i++)
-		this->window->draw(this->line[i], 5, Lines);
 
 	// Отрисовка противника
 	this->window->draw(this->enemy);

@@ -18,6 +18,24 @@ Player::Player() {
     // Состояние прыжка
     this->is_jump = false;
 
+    // Направление
+    /*
+        0 - Лево
+        1 - Право
+    */
+    this->direction = 0;
+
+    // Размер фреймов
+    this->frame_size.x = 64;
+    this->frame_size.y = 64;
+
+    // Текущий фрейм
+    this->current_frame.x = 0;
+    this->current_frame.y = 0;
+
+    // Количество фреймов
+    this->count_frames = 2;
+
 }
 
 // Деструктор
@@ -27,7 +45,27 @@ Player::~Player() {
 
 // Получение позиции
 Vector2f Player::get_position() {
-	return this->position;
+    return this->position;
+}
+
+// Получение размеры
+Vector2f Player::get_size() {
+    return this->frame_size;
+}
+
+// Получение масштаб
+Vector2f Player::get_scale() {
+    return Vector2f((this->direction) ? 1.f : -1.f, 1.f);
+}
+
+// Получение данных текущего фрейма
+IntRect Player::get_frame_rect() {
+    return IntRect(
+        this->frame_size.x * this->current_frame.x,
+        this->frame_size.y * this->current_frame.y,
+        this->frame_size.x,
+        this->frame_size.y
+    );
 }
 
 // Увеличение скорости падения
@@ -38,6 +76,7 @@ void Player::increase_dy(float gravity) {
 // Прыжок
 void Player::jump() {
     if(!this->is_jump) {
+        this->current_frame.x = 1;
         this->dy = -10;
         this->is_jump = true;
     } this->dy -= 0.2f; // для плавности падения
@@ -62,6 +101,8 @@ void Player::update() {
 
     // Движение в право
     if(Keyboard::isKeyPressed(Keyboard::Right)) {
+        this->direction = 1;
+        this->current_frame.x = 1;
     	this->dx += 0.5f;
     	if(this->dx > 6)
     		this->dx = 6;
@@ -69,6 +110,8 @@ void Player::update() {
 
     // Движение в лево
     else if(Keyboard::isKeyPressed(Keyboard::Left)) {
+        this->direction = 0;
+        this->current_frame.x = 1;
     	this->dx -= 0.5f;
     	if(this->dx < -6)
     		this->dx = -6;
@@ -76,6 +119,7 @@ void Player::update() {
 
     // Стоячее состояние по горизонтали
     else {
+        this->current_frame.x = 0;
     	this->dx *= 0.8f;
     	if(abs(this->dx) < 0.1f)
     		this->dx = 0;

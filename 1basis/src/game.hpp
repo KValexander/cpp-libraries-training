@@ -2,6 +2,7 @@
 
 // Константы
 #define GRAVITY 0.4f // гравитация
+#define NUM_SURFACES 100
 
 // Подключение библиотеки SFMl
 #include <SFML/Graphics.hpp>
@@ -38,7 +39,7 @@ private:
 	RectangleShape enemy;
 
 	// Поверхность
-	RectangleShape surface;
+	RectangleShape surfaces[NUM_SURFACES];
 
 	// Инициализация переменных и окна
 	void init_variables();

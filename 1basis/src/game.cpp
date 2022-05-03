@@ -1,9 +1,14 @@
 #include <iostream>
+#include <ctime>
+#include <cstdlib>
 
 #include "game.hpp"
 	
 // Конструктор
 Game::Game() {
+
+	// Инициализаия генератора рандомных чисел
+	srand(time(NULL));
 
 	// Инициализация
 	this->init_variables(); // инициализиция переменных
@@ -12,7 +17,7 @@ Game::Game() {
 	this->init_textures(); // инициализиция текстур
 	this->init_sprites(); // инициализиция спрайтов
 	this->init_enemies(); // инициализиция противника
-	this->init_surfaces(); // инициализиция противника
+	this->init_surfaces(); // инициализиция поверхностей
 
 }
 
@@ -62,7 +67,7 @@ void Game::init_view() {
 void Game::init_textures() {
 
 	// Загрузка изображения в текстуру
-	if(!this->texture.loadFromFile("assets/one.png"))
+	if(!this->texture.loadFromFile("assets/player.png"))
 		std::cout << "Error" << std::endl;
 
 }
@@ -72,6 +77,9 @@ void Game::init_sprites() {
 
 	// Загрузка текстуры в спрайт
 	this->sprite.setTexture(this->texture);
+
+	// Точка основы
+	// this->sprite.setOrigin(32, 0);
 
 }
 
@@ -95,18 +103,19 @@ void Game::init_enemies() {
 // Инициализация поверхностей
 void Game::init_surfaces() {
 
-	// Задать позицию
-	this->surface.setPosition(0, 500);
-	// Задать размер
-	this->surface.setSize(Vector2f(960.f, 40.f));
-	// Задать масштаб
-	// this->surface.setScale(Vector2f(0.5f, 0.5f));
-	// Задать цвет
-	this->surface.setFillColor(Color(255,255,255,255));
-	// Задать цвет обводки
-	// this->surface.setOutlineColor(Color(0,0,0,255));
-	// Задать размер обводки
-	// this->surface.setOutlineThickness(5.f);
+	// Инициализация поверхностей
+	for(int i = 0; i < NUM_SURFACES; i++) {
+		// Позиция поверхности
+		this->surfaces[i].setPosition(
+			i*384, // x
+			300 + 100 - rand() % 200 // y
+		);
+		// Размер поверхности
+		this->surfaces[i].setSize(Vector2f(256.f, 64.f));
+		// Цвет поверхности
+		this->surfaces[i].setFillColor(Color(255,255,255,255));
+	}
+	
 }
 
 // Обработка событий
@@ -144,21 +153,27 @@ int Game::collision_rectangle(float x1, float y1, float x2, float y2, float w1, 
 void Game::collision() {
 
 	Vector2f player_pos = this->player.get_position();
-	Vector2u player_size = this->texture.getSize();
+	Vector2f player_size = this->player.get_size();
 
-	Vector2f surface_pos = this->surface.getPosition();
-	Vector2f surface_size = this->surface.getSize();
+	// Коллизии поверхностей
+	for(int i = 0; i < NUM_SURFACES; i++) {
 
-	if(this->collision_rectangle(
-		player_pos.x,
-		player_pos.y,
-		surface_pos.x,
-		surface_pos.y,
-		player_size.x,
-		player_size.y,
-		surface_size.x,
-		surface_size.y
-	)) this->player.stop_falling(surface_pos.y);
+		Vector2f surface_pos = this->surfaces[i].getPosition();
+		Vector2f surface_size = this->surfaces[i].getSize();
+
+		// Коллизия с игроком
+		if(this->collision_rectangle(
+			player_pos.x,
+			player_pos.y,
+			surface_pos.x,
+			surface_pos.y,
+			player_size.x,
+			player_size.y,
+			surface_size.x,
+			surface_size.y
+		)) this->player.stop_falling(surface_pos.y);
+
+	}
 	
 }
 
@@ -191,6 +206,8 @@ void Game::update() {
 	this->player.update();
 
 	// Обновление позиции спрайта
+	// this->sprite.setScale(this->player.get_scale());
+	this->sprite.setTextureRect(this->player.get_frame_rect());
 	this->sprite.setPosition(this->player.get_position());
 	
 	// Гравитация игрока
@@ -215,7 +232,8 @@ void Game::render() {
 	this->window->draw(this->sprite);
 
 	// Отрисовка поверхностей
-	this->window->draw(this->surface);
+	for(int i = 0; i < NUM_SURFACES; i++)
+		this->window->draw(this->surfaces[i]);
 
 	this->window->display(); // отрисовка
 }

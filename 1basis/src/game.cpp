@@ -79,7 +79,7 @@ void Game::init_sprites() {
 	this->sprite.setTexture(this->texture);
 
 	// Точка основы
-	// this->sprite.setOrigin(32, 0);
+	this->sprite.setOrigin(32, 0);
 
 }
 
@@ -163,7 +163,7 @@ void Game::collision() {
 
 		// Коллизия с игроком
 		if(this->collision_rectangle(
-			player_pos.x,
+			player_pos.x - 32,
 			player_pos.y,
 			surface_pos.x,
 			surface_pos.y,
@@ -181,7 +181,7 @@ void Game::collision() {
 void Game::update_view(Vector2f position) {
 
 	// Корректирование позиции
-	position.x += 57 / 2;
+	position.x += 64 / 2 - 32;
 	position.y += 64 / 2;
 
 	// Проверка позиции области отрисовки
@@ -198,15 +198,16 @@ void Game::update_view(Vector2f position) {
 
 // Обновление данных
 void Game::update() {
+	this->frame++; // увеличение времени
 
     // Обработка событий
     this->events();
 
 	// Обновление данных игрока
-	this->player.update();
+	this->player.update(this->frame);
 
 	// Обновление позиции спрайта
-	// this->sprite.setScale(this->player.get_scale());
+	this->sprite.setScale(this->player.get_scale());
 	this->sprite.setTextureRect(this->player.get_frame_rect());
 	this->sprite.setPosition(this->player.get_position());
 	

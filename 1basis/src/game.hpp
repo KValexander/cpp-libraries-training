@@ -17,6 +17,7 @@ using namespace sf;
 class Game {
 // Приватные методы
 private:
+	int frame; // время
 
 	RenderWindow* window; // окно
 	VideoMode video_mode; // размер окна

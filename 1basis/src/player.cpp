@@ -76,7 +76,6 @@ void Player::increase_dy(float gravity) {
 // Прыжок
 void Player::jump() {
     if(!this->is_jump) {
-        this->current_frame.x = 1;
         this->dy = -10;
         this->is_jump = true;
     } this->dy -= 0.2f; // для плавности падения
@@ -90,7 +89,7 @@ void Player::stop_falling(float y) {
 }
 
 // Обновление данных игрока
-void Player::update() {
+void Player::update(int frame) {
 
     // Обработка нажатий на клавиши
 
@@ -98,11 +97,12 @@ void Player::update() {
     if(Keyboard::isKeyPressed(Keyboard::Up))
         this->jump();
 
-
     // Движение в право
     if(Keyboard::isKeyPressed(Keyboard::Right)) {
         this->direction = 1;
-        this->current_frame.x = 1;
+        // this->current_frame.x = 1;
+        if(frame % 10 == 0)
+            this->current_frame.x = (this->current_frame.x >= 1) ? 0 : ++this->current_frame.x;
     	this->dx += 0.5f;
     	if(this->dx > 6)
     		this->dx = 6;
@@ -111,7 +111,9 @@ void Player::update() {
     // Движение в лево
     else if(Keyboard::isKeyPressed(Keyboard::Left)) {
         this->direction = 0;
-        this->current_frame.x = 1;
+        // this->current_frame.x = 1;
+        if(frame % 10 == 0)
+            this->current_frame.x = (this->current_frame.x >= 1) ? 0 : ++this->current_frame.x;
     	this->dx -= 0.5f;
     	if(this->dx < -6)
     		this->dx = -6;
@@ -124,6 +126,10 @@ void Player::update() {
     	if(abs(this->dx) < 0.1f)
     		this->dx = 0;
     }
+
+    // Анимация прыжка
+    if(this->is_jump)
+        this->current_frame.x = 1;
 
     // Обновление позиции игрока
     this->position.x += this->dx;

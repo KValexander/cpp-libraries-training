@@ -34,6 +34,6 @@ public:
 	void stop_falling(float y); // остановка падения
 
 	void jump(); // прыжок
-	void update(); // обновление данных игрока
+	void update(int frame); // обновление данных игрока
 
 };

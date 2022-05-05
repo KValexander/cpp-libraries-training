@@ -13,6 +13,7 @@ private:
 	Vector2f position; // позиция
 	float dx, dy; // скорость
 	bool is_jump; // состояние прыжка
+	bool is_dead; // состояние смерти
 	int direction; // направление
 
 	// Фреймы
@@ -32,6 +33,7 @@ public:
 
 	void increase_dy(float gravity); // прибавить скорость падения
 	void stop_falling(float y); // остановка падения
+	void die(); // убить игрока
 
 	void jump(); // прыжок
 	void update(int frame); // обновление данных игрока

@@ -15,8 +15,9 @@ Player::Player() {
 	this->dx = 0;
 	this->dy = 0;
 
-    // Состояние прыжка
-    this->is_jump = false;
+    // Состояния
+    this->is_jump = false; // прыжка
+    this->is_dead = false; // смерти
 
     // Направление
     /*
@@ -88,8 +89,14 @@ void Player::stop_falling(float y) {
     this->is_jump = false; // состояние прыжка
 }
 
+// Убить игрока
+void Player::die() {
+    this->is_dead = 1;
+}
+
 // Обновление данных игрока
 void Player::update(int frame) {
+    if(this->is_dead) return;
 
     // Обработка нажатий на клавиши
 

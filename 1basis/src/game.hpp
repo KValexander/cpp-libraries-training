@@ -1,8 +1,10 @@
 #pragma once
 
 // Константы
+#define LENGTH 38400 // длинна карты
 #define GRAVITY 0.4f // гравитация
-#define NUM_SURFACES 100
+#define NUM_ENEMIES 100 // количество врагов
+#define NUM_SURFACES 100 // количество поверхностей
 
 // Подключение библиотеки SFMl
 #include <SFML/Graphics.hpp>
@@ -36,8 +38,8 @@ private:
 	// Игрок
 	Player player;
 
-	// Игровые объекты
-	RectangleShape enemy;
+	// Противники
+	RectangleShape enemies[NUM_ENEMIES];
 
 	// Поверхность
 	RectangleShape surfaces[NUM_SURFACES];
@@ -60,8 +62,11 @@ public:
 	const bool running() const;
 
 	// Проверка пересечения прямоугольников
-	int collision_rectangle(float x1, float y1, float x2,
+	bool collision_rectangle(float x1, float y1, float x2,
 		float y2, float w1, float h1, float w2, float h2);
+	
+	// Проверка коллизий объектов
+	bool object_collision(Player player, RectangleShape object);
 
 	// Обновление области отрисовки
 	void update_view(Vector2f position);

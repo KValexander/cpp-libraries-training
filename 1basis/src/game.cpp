@@ -83,21 +83,35 @@ void Game::init_sprites() {
 
 }
 
-// Инициализация противника
+// Инициализация противников
 void Game::init_enemies() {
 
+	// Противники
+	for(int i = 0; i < NUM_ENEMIES; i++) {
+		// Размер
+		this->enemies[i].setSize(Vector2f(64.f, 64.f));
+		// Цвет
+		this->enemies[i].setFillColor(Color(128,64,64,255));
+
+		// Позиция
+		this->enemies[i].setPosition(
+			this->video_mode.width / 2 + rand() % LENGTH,
+			rand() % this->video_mode.height
+		);
+	}
+
 	// Задать позицию
-	this->enemy.setPosition(960 / 2 - 50, 540 / 2 - 50);
+	// this->enemy.setPosition(960 / 2 - 50, 540 / 2 - 50);
 	// Задать размер
-	this->enemy.setSize(Vector2f(100.f, 100.f));
+	// this->enemy.setSize(Vector2f(100.f, 100.f));
 	// Задать масштаб
 	// this->enemy.setScale(Vector2f(0.5f, 0.5f));
 	// Задать цвет
-	this->enemy.setFillColor(Color(255,255,255,255));
+	// this->enemy.setFillColor(Color(255,255,255,255));
 	// Задать цвет обводки
-	this->enemy.setOutlineColor(Color(0,0,0,255));
+	// this->enemy.setOutlineColor(Color(0,0,0,255));
 	// Задать размер обводки
-	this->enemy.setOutlineThickness(5.f);
+	// this->enemy.setOutlineThickness(5.f);
 }
 
 // Инициализация поверхностей
@@ -145,35 +159,45 @@ void Game::events() {
 }
 
 // Проверка пересечения прямоугольников
-int Game::collision_rectangle(float x1, float y1, float x2, float y2, float w1, float h1, float w2, float h2) {
+bool Game::collision_rectangle(float x1, float y1, float x2, float y2, float w1, float h1, float w2, float h2) {
     return (!((x1 > (x2+w2)) || (x2 > (x1+w1)) || (y1 > (y2+h2)) || (y2 > (y1+h1))));
+}
+
+// Проверка коллизий объектов
+bool Game::object_collision(Player player, RectangleShape object) {
+
+	Vector2f player_pos = player.get_position();
+	Vector2f player_size = player.get_size();
+
+	Vector2f object_pos = object.getPosition();
+	Vector2f object_size = object.getSize();
+
+	if(this->collision_rectangle(
+		player_pos.x - 32,
+		player_pos.y,
+		object_pos.x,
+		object_pos.y,
+		player_size.x,
+		player_size.y,
+		object_size.x,
+		object_size.y
+	)) return true;
+
+	return false;
 }
 
 // Коллизии
 void Game::collision() {
 
-	Vector2f player_pos = this->player.get_position();
-	Vector2f player_size = this->player.get_size();
+	// Коллизии противников
+	for(int i = 0; i < NUM_ENEMIES; i++)
+		if(this->object_collision(this->player, this->enemies[i]))
+			this->player.die();
 
 	// Коллизии поверхностей
-	for(int i = 0; i < NUM_SURFACES; i++) {
-
-		Vector2f surface_pos = this->surfaces[i].getPosition();
-		Vector2f surface_size = this->surfaces[i].getSize();
-
-		// Коллизия с игроком
-		if(this->collision_rectangle(
-			player_pos.x - 32,
-			player_pos.y,
-			surface_pos.x,
-			surface_pos.y,
-			player_size.x,
-			player_size.y,
-			surface_size.x,
-			surface_size.y
-		)) this->player.stop_falling(surface_pos.y);
-
-	}
+	for(int i = 0; i < NUM_SURFACES; i++)
+		if(this->object_collision(this->player, this->surfaces[i]))
+			this->player.stop_falling(this->surfaces[i].getPosition().y);
 	
 }
 
@@ -226,11 +250,12 @@ void Game::render() {
 	// Очистка заднего фона
 	this->window->clear(Color(128, 128, 128, 255));
 
-	// Отрисовка противника
-	this->window->draw(this->enemy);
-
 	// Отрисовка игрока
 	this->window->draw(this->sprite);
+
+	// Отрисовка противника
+	for(int i = 0; i < NUM_ENEMIES; i++)
+		this->window->draw(this->enemies[i]);
 
 	// Отрисовка поверхностей
 	for(int i = 0; i < NUM_SURFACES; i++)

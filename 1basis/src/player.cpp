@@ -19,6 +19,9 @@ Player::Player() {
     this->is_jump = false; // прыжка
     this->is_dead = false; // смерти
 
+    // Количество жизней
+    this->lives = 3;
+
     // Направление
     /*
         0 - Лево
@@ -41,7 +44,16 @@ Player::Player() {
 
 // Деструктор
 Player::~Player() {
-	// delete this;
+}
+
+// Получение количества жизней игрока
+int Player::get_lives() {
+    return this->lives;
+}
+
+// Получить состояние смерти игрока
+bool Player::get_is_dead() {
+    return this->is_dead;
 }
 
 // Получение позиции
@@ -92,6 +104,14 @@ void Player::stop_falling(float y) {
 // Убить игрока
 void Player::die() {
     this->is_dead = 1;
+    this->lives--;
+}
+
+// Сброс данных игрока
+void Player::reset() {
+    this->is_dead = 0;
+    this->position.x = 0;
+    this->position.y = 0;
 }
 
 // Обновление данных игрока

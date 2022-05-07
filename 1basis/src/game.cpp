@@ -1,3 +1,4 @@
+#include <cstdio>
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
@@ -14,6 +15,7 @@ Game::Game() {
 	this->init_variables(); // инициализиция переменных
 	this->init_window(); // инициализиция окна
 	this->init_view(); // инициализиция области отрисовки
+	this->init_texts(); // инициализиция надписей
 	this->init_textures(); // инициализиция текстур
 	this->init_sprites(); // инициализиция спрайтов
 	this->init_enemies(); // инициализиция противника
@@ -34,6 +36,12 @@ void Game::init_variables() {
 
 	// Окно
 	this->window = nullptr;
+
+	// Текущий экран
+	this->current_screen = SCREEN_LIVE;
+
+	// Счётчик
+	this->countdown = 0;
 
 }
 
@@ -63,12 +71,37 @@ void Game::init_view() {
 
 }
 
+// Инициализация надписей
+void Game::init_texts() {
+
+	// Загрузка шрифта
+	if(!this->font.loadFromFile("assets/Intro.otf"))
+		std::cout << "Font load error" << std::endl;
+
+	// Инициализация надписи на экране жизней
+	this->text_live.setFont(this->font); // задать шрифт
+	// Конкатенация с преобразование числа в строку
+	char buffer[10]; sprintf(buffer, "x %d", this->player.get_lives());
+	this->text_live.setString(buffer); // задать текст
+	this->text_live.setCharacterSize(36); // размер текста в пикселях
+	this->text_live.setFillColor(Color(255, 255, 255, 255)); // цвет текста
+	this->text_live.setPosition(10, 10); // позиция текста
+
+	// Инициализация надписи окончания игры
+	this->text_gameover.setFont(this->font);
+	this->text_gameover.setString("GAMEOVER");
+	this->text_gameover.setCharacterSize(36);
+	this->text_gameover.setFillColor(Color(255, 255, 255, 255)); // цвет текста
+	this->text_gameover.setPosition(10, 10); // позиция текста
+
+}
+
 // Инициализация текстур
 void Game::init_textures() {
 
 	// Загрузка изображения в текстуру
 	if(!this->texture.loadFromFile("assets/player.png"))
-		std::cout << "Error" << std::endl;
+		std::cout << "Texture load error" << std::endl;
 
 }
 
@@ -190,9 +223,14 @@ bool Game::object_collision(Player player, RectangleShape object) {
 void Game::collision() {
 
 	// Коллизии противников
-	for(int i = 0; i < NUM_ENEMIES; i++)
-		if(this->object_collision(this->player, this->enemies[i]))
-			this->player.die();
+	for(int i = 0; i < NUM_ENEMIES; i++) {
+		if(this->object_collision(this->player, this->enemies[i])) {
+			if(!this->player.get_is_dead()) {
+				this->player.die();
+				this->countdown = 120;
+			}
+		}
+	}
 
 	// Коллизии поверхностей
 	for(int i = 0; i < NUM_SURFACES; i++)
@@ -210,7 +248,7 @@ void Game::update_view(Vector2f position) {
 
 	// Проверка позиции области отрисовки
 	if(position.x < this->video_mode.width / 2)  position.x = this->video_mode.width / 2;
-	if(position.y > this->video_mode.height / 2)  position.y = this->video_mode.height / 2;
+	if(position.x > this->video_mode.height / 2)  position.y = this->video_mode.height / 2;
 
 	// Передвижение области отрисовки
 	this->view.setCenter(position);
@@ -223,43 +261,105 @@ void Game::update_view(Vector2f position) {
 // Обновление данных
 void Game::update() {
 	this->frame++; // увеличение времени
+    // Проверка счётчика
+    if(this->countdown > 0)
+    	this->countdown--;
 
     // Обработка событий
     this->events();
 
-	// Обновление данных игрока
-	this->player.update(this->frame);
+    // Обновление данных после смерти игрока
+    if(this->countdown <= 0 && this->player.get_is_dead()) {
+		this->frame = 0;
+    	this->player.reset();
+    	this->update_view(this->player.get_position());
+		char buffer[10]; sprintf(buffer, "x %d", this->player.get_lives());
+		this->text_live.setString(buffer);
+		if(this->player.get_lives() < 0)
+			this->current_screen = SCREEN_GAMEOVER;
+		else this->current_screen = SCREEN_LIVE;
+    }
 
-	// Обновление позиции спрайта
-	this->sprite.setScale(this->player.get_scale());
-	this->sprite.setTextureRect(this->player.get_frame_rect());
-	this->sprite.setPosition(this->player.get_position());
-	
-	// Гравитация игрока
-	this->player.increase_dy(GRAVITY);
+    // Изменение экрана
+    if(this->frame > 120 && this->current_screen != SCREEN_GAMEOVER)
+    	this->current_screen = SCREEN_GAME;
 
-	// Обновление области отрисовки
-	this->update_view(this->player.get_position());
+    // Экраны
+    switch(this->current_screen) {
 
-    // Коллизии
-    this->collision();
+    	// Экран жизни
+    	case SCREEN_LIVE: break;
+
+    	// Экран игры
+    	case SCREEN_GAME:
+
+			// Обновление данных игрока
+			this->player.update(this->frame);
+
+			// Обновление позиции спрайта
+			this->sprite.setScale(this->player.get_scale());
+			this->sprite.setTextureRect(this->player.get_frame_rect());
+			this->sprite.setPosition(this->player.get_position());
+			
+			// Гравитация игрока
+			this->player.increase_dy(GRAVITY);
+
+			// Обновление области отрисовки
+			this->update_view(this->player.get_position());
+
+		    // Коллизии
+		    this->collision();
+
+    	break;
+    		
+    	// Экран конца игры
+    	case SCREEN_GAMEOVER: break;
+
+    }
 }
 
 // Отрисовка данных
 void Game::render() {
 	// Очистка заднего фона
-	this->window->clear(Color(128, 128, 128, 255));
+	this->window->clear(Color(0, 0, 0, 255));
 
-	// Отрисовка игрока
-	this->window->draw(this->sprite);
+    // Экраны
+    switch(this->current_screen) {
 
-	// Отрисовка противника
-	for(int i = 0; i < NUM_ENEMIES; i++)
-		this->window->draw(this->enemies[i]);
+    	// Экран жизни
+    	case SCREEN_LIVE:
 
-	// Отрисовка поверхностей
-	for(int i = 0; i < NUM_SURFACES; i++)
-		this->window->draw(this->surfaces[i]);
+    		this->window->draw(this->text_live);
+
+    	break;
+
+    	// Экран игры
+    	case SCREEN_GAME:
+
+			// Очистка заднего фона
+			this->window->clear(Color(128, 128, 128, 255));
+
+			// Отрисовка игрока
+			this->window->draw(this->sprite);
+
+			// Отрисовка противника
+			for(int i = 0; i < NUM_ENEMIES; i++)
+				this->window->draw(this->enemies[i]);
+
+			// Отрисовка поверхностей
+			for(int i = 0; i < NUM_SURFACES; i++)
+				this->window->draw(this->surfaces[i]);
+
+    	break;
+    		
+    	// Экран конца игры
+    	case SCREEN_GAMEOVER:
+
+    		this->window->draw(this->text_gameover);
+
+    	break;
+
+    }
 
 	this->window->display(); // отрисовка
 }

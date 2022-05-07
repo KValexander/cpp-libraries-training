@@ -15,11 +15,21 @@
 // Пространство имён sf
 using namespace sf;
 
+// Последовательность экранов
+typedef enum Screen {
+	SCREEN_LIVE = 0,
+	SCREEN_GAME,
+	SCREEN_GAMEOVER
+} Screen;
+
 // Класс Игра
 class Game {
 // Приватные методы
 private:
 	int frame; // время
+
+	Screen current_screen; // текущий экран
+	int countdown; // счётчик
 
 	RenderWindow* window; // окно
 	VideoMode video_mode; // размер окна
@@ -28,6 +38,13 @@ private:
 
 	// Область отрисовки
 	View view;
+
+	// Шрифт
+	Font font;
+
+	// Напдиси
+	Text text_live;
+	Text text_gameover;
 
 	// Текстуры
 	Texture texture;
@@ -48,6 +65,7 @@ private:
 	void init_variables();
 	void init_window();
 	void init_view();
+	void init_texts();
 	void init_textures();
 	void init_sprites();
 	void init_enemies();

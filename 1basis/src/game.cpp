@@ -99,8 +99,12 @@ void Game::init_texts() {
 // Инициализация текстур
 void Game::init_textures() {
 
-	// Загрузка изображения в текстуру
+	// Загрузка изображения игрока в текстуру
 	if(!this->texture.loadFromFile("assets/player.png"))
+		std::cout << "Texture load error" << std::endl;
+
+	// Загрузка изображения противника в текстуру
+	if(!this->texture_enemy.loadFromFile("assets/enemy.png"))
 		std::cout << "Texture load error" << std::endl;
 
 }
@@ -108,11 +112,13 @@ void Game::init_textures() {
 // Инициализация спрайтов
 void Game::init_sprites() {
 
-	// Загрузка текстуры в спрайт
+	// Загрузка текстуры игрока в спрайт
 	this->sprite.setTexture(this->texture);
-
 	// Точка основы
 	this->sprite.setOrigin(32, 0);
+
+	// Загрузка текстуры противника в спрайт
+	this->sprite_enemy.setTexture(this->texture_enemy);
 
 }
 
@@ -296,7 +302,7 @@ void Game::update() {
 			// Обновление данных игрока
 			this->player.update(this->frame);
 
-			// Обновление позиции спрайта
+			// Обновление позиции спрайта игрока
 			this->sprite.setScale(this->player.get_scale());
 			this->sprite.setTextureRect(this->player.get_frame_rect());
 			this->sprite.setPosition(this->player.get_position());
@@ -343,8 +349,10 @@ void Game::render() {
 			this->window->draw(this->sprite);
 
 			// Отрисовка противника
-			for(int i = 0; i < NUM_ENEMIES; i++)
-				this->window->draw(this->enemies[i]);
+			for(int i = 0; i < NUM_ENEMIES; i++) {
+				this->sprite_enemy.setPosition(this->enemies[i].getPosition());
+				this->window->draw(this->sprite_enemy);
+			}
 
 			// Отрисовка поверхностей
 			for(int i = 0; i < NUM_SURFACES; i++)

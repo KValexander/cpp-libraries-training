@@ -48,9 +48,13 @@ private:
 
 	// Текстуры
 	Texture texture;
+	Texture texture_enemy;
+	Texture texture_surface;
 
 	// Спрайты
 	Sprite sprite;
+	Sprite sprite_enemy;
+	Sprite sprite_surface;
 
 	// Игрок
 	Player player;

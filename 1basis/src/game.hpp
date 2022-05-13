@@ -19,7 +19,8 @@ using namespace sf;
 typedef enum Screen {
 	SCREEN_LIVE = 0,
 	SCREEN_GAME,
-	SCREEN_GAMEOVER
+	SCREEN_GAMEOVER,
+	SCREEN_VICTORY,
 } Screen;
 
 // Класс Игра
@@ -30,6 +31,8 @@ private:
 
 	Screen current_screen; // текущий экран
 	int countdown; // счётчик
+
+	bool is_victory; // состояние победы
 
 	RenderWindow* window; // окно
 	VideoMode video_mode; // размер окна
@@ -45,16 +48,19 @@ private:
 	// Напдиси
 	Text text_live;
 	Text text_gameover;
+	Text text_victory;
 
 	// Текстуры
 	Texture texture;
 	Texture texture_enemy;
 	Texture texture_surface;
+	Texture texture_background;
 
 	// Спрайты
 	Sprite sprite;
 	Sprite sprite_enemy;
 	Sprite sprite_surface;
+	Sprite sprite_background;
 
 	// Игрок
 	Player player;

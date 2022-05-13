@@ -43,6 +43,9 @@ void Game::init_variables() {
 	// Счётчик
 	this->countdown = 0;
 
+	// Состояние победы
+	this->is_victory = 0;
+
 }
 
 // Инициализация окна
@@ -94,6 +97,13 @@ void Game::init_texts() {
 	this->text_gameover.setFillColor(Color(255, 255, 255, 255)); // цвет текста
 	this->text_gameover.setPosition(10, 10); // позиция текста
 
+	// Инициализация надписи победы
+	this->text_victory.setFont(this->font);
+	this->text_victory.setString("YOU WIN/WON/VICTORY");
+	this->text_victory.setCharacterSize(36);
+	this->text_victory.setFillColor(Color(255, 255, 255, 255)); // цвет текста
+	this->text_victory.setPosition(10, 10); // позиция текста
+
 }
 
 // Инициализация текстур
@@ -105,6 +115,14 @@ void Game::init_textures() {
 
 	// Загрузка изображения противника в текстуру
 	if(!this->texture_enemy.loadFromFile("assets/enemy.png"))
+		std::cout << "Texture load error" << std::endl;
+
+	// Загрузка изображения поверхности в текстуру
+	if(!this->texture_surface.loadFromFile("assets/platform.png"))
+		std::cout << "Texture load error" << std::endl;
+
+	// Загрузка изображения заднего фона в текстуру
+	if(!this->texture_background.loadFromFile("assets/background.png"))
 		std::cout << "Texture load error" << std::endl;
 
 }
@@ -119,6 +137,12 @@ void Game::init_sprites() {
 
 	// Загрузка текстуры противника в спрайт
 	this->sprite_enemy.setTexture(this->texture_enemy);
+
+	// Загрузка текстуры поверхности в спрайт
+	this->sprite_surface.setTexture(this->texture_surface);
+
+	// Загрузка текстуры заднего фона в спрайт
+	this->sprite_background.setTexture(this->texture_background);
 
 }
 
@@ -256,6 +280,9 @@ void Game::update_view(Vector2f position) {
 	if(position.x < this->video_mode.width / 2)  position.x = this->video_mode.width / 2;
 	if(position.x > this->video_mode.height / 2)  position.y = this->video_mode.height / 2;
 
+	// Передвижение заднего фона за игроком
+	this->sprite_background.setPosition(Vector2f(position.x - this->video_mode.width / 2, 0));
+
 	// Передвижение области отрисовки
 	this->view.setCenter(position);
 
@@ -287,7 +314,7 @@ void Game::update() {
     }
 
     // Изменение экрана
-    if(this->frame > 120 && this->current_screen != SCREEN_GAMEOVER)
+    if(this->frame > 120 && this->current_screen == SCREEN_LIVE)
     	this->current_screen = SCREEN_GAME;
 
     // Экраны
@@ -316,10 +343,19 @@ void Game::update() {
 		    // Коллизии
 		    this->collision();
 
+		    // Проверка победы
+		    if(this->player.get_position().x >= LENGTH) {
+		    	this->current_screen = SCREEN_VICTORY;
+		    	this->is_victory = 1;
+		    }
+
     	break;
     		
     	// Экран конца игры
     	case SCREEN_GAMEOVER: break;
+
+    	// Экран победы
+    	case SCREEN_VICTORY: break;
 
     }
 }
@@ -328,6 +364,7 @@ void Game::update() {
 void Game::render() {
 	// Очистка заднего фона
 	this->window->clear(Color(0, 0, 0, 255));
+
 
     // Экраны
     switch(this->current_screen) {
@@ -345,6 +382,9 @@ void Game::render() {
 			// Очистка заднего фона
 			this->window->clear(Color(128, 128, 128, 255));
 
+			// Отрисовка заднего фона
+			this->window->draw(this->sprite_background);
+
 			// Отрисовка игрока
 			this->window->draw(this->sprite);
 
@@ -355,8 +395,10 @@ void Game::render() {
 			}
 
 			// Отрисовка поверхностей
-			for(int i = 0; i < NUM_SURFACES; i++)
-				this->window->draw(this->surfaces[i]);
+			for(int i = 0; i < NUM_SURFACES; i++) {
+				this->sprite_surface.setPosition(this->surfaces[i].getPosition());
+				this->window->draw(this->sprite_surface);
+			}
 
     	break;
     		
@@ -364,6 +406,13 @@ void Game::render() {
     	case SCREEN_GAMEOVER:
 
     		this->window->draw(this->text_gameover);
+
+    	break;
+
+    	// Экран победы
+    	case SCREEN_VICTORY:
+
+    		this->window->draw(this->text_victory);
 
     	break;
 

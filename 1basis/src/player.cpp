@@ -8,7 +8,7 @@
 Player::Player() {
 
 	// Позиция
-	this->position.x = 0;
+	this->position.x = 38000;
 	this->position.y = 0;
 
 	// Ускорение
@@ -157,6 +157,10 @@ void Player::update(int frame) {
     // Анимация прыжка
     if(this->is_jump)
         this->current_frame.x = 1;
+
+    // Проверка падения
+    if(this->position.y > 1000)
+        this->die();
 
     // Обновление позиции игрока
     this->position.x += this->dx;

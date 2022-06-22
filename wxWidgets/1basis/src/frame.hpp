@@ -14,6 +14,16 @@ public:
     // Frame quit
     void OnQuit(wxCommandEvent &event);
 
+    // Menu bar
+    wxMenuBar   *menubar;
+    wxMenu      *file_menu;
+    wxMenu      *imp_menu;
+    wxMenuItem  *quit;
+
+    // Toolbars
+    wxToolBar *toolbar1;
+    wxToolBar *toolbar2;
+
     // Panels
     wxPanel     *m_parent;
     Panel       *m_p;

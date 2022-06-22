@@ -15,8 +15,8 @@ Panel::Panel(wxPanel *parent)
 	this->m_parent = parent;
 
 	// Buttons
-	this->m_plus = new wxButton(this, ID_PLUS, wxT("+"), wxPoint(10, 10));
-	this->m_minus = new wxButton(this, ID_MINUS, wxT("-"), wxPoint(10, 100));
+	this->m_plus = new wxButton(this, ID_PLUS, wxT("+"), wxPoint(0, 10));
+	this->m_minus = new wxButton(this, ID_MINUS, wxT("-"), wxPoint(0, 100));
 
 	// Assigning an event to a buttons
 	Connect(ID_PLUS, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Panel::OnPlus));

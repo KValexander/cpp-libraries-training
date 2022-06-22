@@ -14,7 +14,7 @@ include_directories(
 	${WX_INCLUDE_DIRS}
 )
 
-file(GLOB_RECURSE SOURCE "src/*.cpp" "src/*.hpp")
+file(GLOB_RECURSE SOURCE "src/*.cpp" "src/*.hpp" "src/*.h")
 add_executable(main
 	${SOURCE}
 )
@@ -23,5 +23,5 @@ target_link_libraries(main
 	${WX_LIBRARIES}
 )
 
-add_custom_target(link_bin ALL COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/../wxWidgets/bin ${CMAKE_BINARY_DIR})
-# add_custom_target(link_assets ALL COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/assets ${CMAKE_BINARY_DIR}/assets)
+add_custom_target(link_dll ALL COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/../wxWidgets/dll ${CMAKE_BINARY_DIR})
+add_custom_target(link_assets ALL COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/assets ${CMAKE_BINARY_DIR}/assets)

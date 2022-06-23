@@ -1,32 +1,29 @@
-// Include libraries
+/* Include libraries */
 #include <wx/wx.h>
+#include <wx/menu.h>
 
-// Include headers
-#include "panel.hpp"
+/* Constants */
+#define WIDTH 350
+#define HEIGHT 250
 
-// Frame class extends wxFrame
-class Frame : public wxFrame {
+/* Class Frame extends wxFrame */
+class Frame : public wxFrame
+{
 
-public: 
-    // Constructor
-    Frame(const wxString& title);
+/* Public */
+public:
 
-    // Frame quit
-    void OnQuit(wxCommandEvent &event);
+	/* Constructor */
+	Frame(const wxString &title);
 
-    // Menu bar
-    wxMenuBar   *menubar;
-    wxMenu      *file_menu;
-    wxMenu      *imp_menu;
-    wxMenuItem  *quit;
+	/* Menubar */
+	void MenuBar();
+	wxMenuBar 	*menubar;
+	wxMenu 		*menu_file;
+	wxMenu 		*menu_edit;
+	wxMenu 		*menu_help;
 
-    // Toolbars
-    wxToolBar *toolbar1;
-    wxToolBar *toolbar2;
-
-    // Panels
-    wxPanel     *m_parent;
-    Panel       *m_p;
-    OtherPanel  *m_op;
+	/* Textarea */
+	wxTextCtrl 	*textctrl;
 
 };

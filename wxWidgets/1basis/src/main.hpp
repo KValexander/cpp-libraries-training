@@ -1,10 +1,14 @@
-// Include libraries
+/* Include libraries */
 #include <wx/wx.h>
 
-// App class extends wxApp
-class MyApp : public wxApp {
+/* App class extends wxApp */
+class MyApp : public wxApp
+{
 
+/* Public */
 public:
-    // Accessor, wxWidget function
+
+    /* Accessor, wxWidget function */
     virtual bool OnInit();
+
 };

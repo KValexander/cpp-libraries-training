@@ -2,7 +2,7 @@
 #include <wx/wx.h>
 
 /* App class extends wxApp */
-class App : public wxApp
+class MyApp : public wxApp
 {
 
 /* Public */

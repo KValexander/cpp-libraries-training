@@ -3,10 +3,10 @@
 #include "frame.hpp"
 
 /* Implement app */
-IMPLEMENT_APP(App)
+wxIMPLEMENT_APP(MyApp);
 
 /* Accessor */
-bool App::OnInit()
+bool MyApp::OnInit()
 {
 
     /* Frame class pointer, wxT("Frame") - frame title */

@@ -5,7 +5,6 @@ project(main)
 set(WX_PATH "${CMAKE_SOURCE_DIR}/../wxWidgets")
 
 set(WX_INCLUDE_DIRS "${WX_PATH}/include")
-set(NLOHMANN_JSON_DIR "${CMAKE_SOURCE_DIR}/nlohmann_include/")
 
 file(GLOB_RECURSE WX_LIBRARIES "${WX_PATH}/lib/gcc1120_x64_dll/*.a")
 # set(WX_LIBRARIES "${WX_PATH}/lib/gcc1120_x64_dll/libwxbase31u.a;${WX_PATH}/lib/gcc1120_x64_dll/libwxbase31ud.a;")
@@ -13,7 +12,6 @@ file(GLOB_RECURSE WX_LIBRARIES "${WX_PATH}/lib/gcc1120_x64_dll/*.a")
 include_directories(
 	${CMAKE_SOURCE_DIR}/src
 	${WX_INCLUDE_DIRS}
-	${NLOHMANN_JSON_DIR}
 )
 
 file(GLOB_RECURSE SOURCE "src/*.cpp" "src/*.hpp" "src/*.h")

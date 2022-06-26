@@ -14,11 +14,7 @@ bool App::OnInit()
     
     /* Show frame */
     frame->Show(true);
-
-    /* Custom dialog screen */
-    CustomDialogScreen *custom = new CustomDialogScreen(wxT("CustomDialogScreen"));
-    custom->Show(true);
-
+    
     return true;
     
 }

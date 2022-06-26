@@ -1,5 +1,7 @@
 /* Include libraries */
 #include <wx/wx.h>
+#include <wx/tglbtn.h>
+#include <wx/slider.h>
 
 /* Cosntants */
 #define WIDTH 250
@@ -7,11 +9,11 @@
 
 /* Enum */
 enum {
-	ID_FONTDIALOG = 1,
-	ID_INFO,
-	ID_ERROR,
-	ID_QUESTION,
-	ID_ALERT
+	ID_CHECKBOX = 1,
+	ID_SLIDER,
+	ID_TGBUTTON1,
+	ID_TGBUTTON2,
+	ID_TGBUTTON3,
 };
 
 /* Frame class extends wxFrame */
@@ -24,46 +26,68 @@ public:
 	/* Constructor */
 	Frame(const wxString &title);
 
-	/* Font dialog screen */
-	void FontDialogScreen();
 
-	/* Static text */
-	wxStaticText *st;
-
-	/* Open font */
-	void OnFontOpen(wxCommandEvent &event);
+	/* Static text screen */
+	void StaticTextScreen();
 
 
-	/* Select file screen */
-	void SelectFileScreen();
+	/* Toggle button screen */
+	void ToggleButtonScreen();
 
-	/* Input text */
-	wxTextCtrl *tc;
+	/* Toggled */
+	void OnToggleRed(wxCommandEvent &event);
+	void OnToggleGreen(wxCommandEvent &event);
+	void OnToggleBlue(wxCommandEvent &event);
 
-	/* Open file */
-	void OnFileOpen(wxCommandEvent &event);
+
+	/* Bitmap button scroll screen */
+	void BitmapButtonScrollScreen();
+
+	/* Slider */
+	wxSlider *slider;
+
+	/* Bitmap button */
+	wxBitmapButton *bb; 
+
+	/* Position */
+	int pos;
+
+	/* Bitmap button scroll */
+	void OnBitmapButtonScroll(wxScrollEvent &event);
 
 
-	/* Message screen */
-	void MessageScreen();
+	/* Checkbox toggle screen */
+	void CheckBoxToggleScreen();
 
-	/* Messages */
-	void InfoMessage(wxCommandEvent &event);
-	void ErrorMessage(wxCommandEvent &event);
-	void QuestionMessage(wxCommandEvent &event);
-	void AlertMessage(wxCommandEvent &event);
+	/* Checkbox */
+	wxCheckBox *m_cb;
+
+	/* Checkbox toggle */
+	void OnCheckBoxToggle(wxCommandEvent &event);
+
+/* Protected */
+protected:
+
+	/* Toggle buttons */
+	wxToggleButton *tg_btn1;
+	wxToggleButton *tg_btn2;
+	wxToggleButton *tg_btn3;
+
+	/* Panel and colour */
+	wxPanel *tg_panel;
+	wxColour *colour;
 
 };
 
 
-/* Custom dialog screen extends wxDialog */
-class CustomDialogScreen : public wxDialog
+/* Static line screen class extends wxDialog */
+class StaticLineScreen : wxDialog
 {
 
 /* Public */
 public:
 
 	/* Constructor */
-	CustomDialogScreen(const wxString &title);
+	StaticLineScreen(const wxString &title);
 
 };

@@ -15,4 +15,7 @@ public:
 	/* Constructor */
 	Frame(const wxString &title);
 
+	/* Contexts */
+	void OnPaint(wxPaintEvent &event);
+
 };

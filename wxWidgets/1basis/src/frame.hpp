@@ -1,3 +1,5 @@
+#pragma once
+
 /* Include libraries */
 #include <wx/wx.h>
 
